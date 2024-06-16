@@ -10,6 +10,8 @@ export class AwsStack extends cdk.Stack {
     super(scope, id, props);
     const bucket = new s3.Bucket(this, 's3bucket-for-shop', {
       websiteIndexDocument: 'index.html',
+      publicReadAccess: false,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
     });
     const OAI = new cloudfront.OriginAccessIdentity(this, "shop-react-rsschool-oai");
 
@@ -36,6 +38,9 @@ export class AwsStack extends cdk.Stack {
       destinationBucket: bucket,
       distribution: cloudFront,
       distributionPaths: ['/*'],
+    });
+     new cdk.CfnOutput(this, 'SpaDistributionUrl', {
+      value: cloudFront.distributionDomainName,
     });
   }
 }
